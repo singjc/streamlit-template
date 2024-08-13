@@ -414,7 +414,11 @@ class StreamlitUI:
         # write defaults ini files
         ini_file_path = Path(self.parameter_manager.ini_dir, f"{topp_tool_name}.ini")
         if not ini_file_path.exists():
-            subprocess.call([topp_tool_name, "-write_ini", str(ini_file_path)])
+            try:
+                subprocess.call([topp_tool_name, "-write_ini", str(ini_file_path)])
+            except FileNotFoundError as e:
+                st.error(f"An error occurred while executing '{topp_tool_name} -write_ini {str(ini_file_path)}': \n\n{e}\n\n Make sure that {topp_tool_name} is installed and an available system command.")
+                st.stop()
             # update custom defaults if necessary
             if custom_defaults:
                 param = poms.Param()
